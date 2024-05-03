@@ -1,11 +1,11 @@
-# Case Study 1: Robot Traversing a Grid
-This readme discusses the navigation problem of a robot traversing a square grid with random obstacles. The documentation is also included here. <br>
+# Robot Traversing a Grid Using Space-Filling Curves
+Here I discuss and visualise the navigation problem of a robot traversing a square grid with random obstacles. The documentation is also included here. <br>
 
 [Run the code!](#running-the-code)
 
-![Grid Progression](/gridgif.gif)
+![Grid Progression](imgs/gridgif.gif)
 
-- [Case Study 1: Robot Traversing a Grid](#case-study-1-robot-traversing-a-grid)
+- [Robot Traversing a Grid Using Space-Filling Curves](#robot-traversing-a-grid-using-space-filling-curves)
   - [Summary \& Overview](#summary--overview)
   - [Primary Hyperparameters](#primary-hyperparameters)
     - [`plt.rcParams`](#pltrcparams)
@@ -26,10 +26,10 @@ This readme discusses the navigation problem of a robot traversing a square grid
   - [Running the code](#running-the-code)
 
 ## Summary & Overview
-This algorithm is based on [this paper](https://arxiv.org/abs/2308.02200) for solving the grid traversal with obstacles problem: <br>
-Given an $N\times N$ square grid with arbitrarily sized rectangular obstacles, minimize the number of steps(up/down/left/right) the robot must make to traverse the entire grid. <br>
-In our implementation, the Hilbert curve is used (although any space filling curve is viable) based on [this source code](https://github.com/wakodeashay/skc).<br> 
-The gist is to follow the space filling curve as far as we can, and where we cannot(because of an obstacle), use Dijkstra's algorithm to get us to the next viable position with the smallest Hilbert number.<br>
+This algorithm is based on the paper [Online Obstacle evasion with Space-Filling Curves](https://arxiv.org/abs/2308.02200)(Ashay Wakode, Arpita Sinha - Aug. 2023) for solving the grid traversal with obstacles problem: <br>
+Given an $N\times N$ square grid with arbitrarily sized rectangular obstacles, minimize the number of steps(up/down/left/right) the robot must make to traverse the entire grid. <br> The original source code by the authors is somewhat cryptic, this project aims to clarify all aspects of their approach, and to make the visualisations as accessible as possible.<br>
+In our implementation, the Hilbert curve is used (although any space filling curve is viable) based on [the original source code](https://github.com/wakodeashay/skc).<br> 
+The gist is to follow the space filling curve as far as we can, and where we cannot(because of an obstacle), use Dijkstra's algorithm to get us to the next viable position with the smallest Hilbert number.<br><br>
 Since the Hilbert curve only works for grids with side length $2^n$, we could work on $N\times N$ grids by finding the smallest integer $n$ such that $2^n > N$, and filling the excess space with obstacles. In this script, we only consider the cases where $N = 2^n$ for simplicity. The underlying logic for navigation remains the same.<br>
 We use the `igraph` library to set up a graph containing the visited gridpoints, augmented with the next possible set of positions. We then use Dijkstra's algorithm (`get_all_shortest_paths()` method) to find the shortest path to our desired position.<br>
 It is recommended to first [run the code](#running-the-code) as-is, and quickly read through [`main.py`](/src/main.py), as well as the documentation on the [primary](#primary-hyperparameters) and [secondary](#secondaryoptional-hyperparameters) hyperparameters. It will be much simpler to understand once you'ce played with the algorithm a few times.<br>
@@ -293,13 +293,18 @@ The `try/except` clauses deals with the edge of the board, but their logic is eq
 <br>
 
 ## Running the code
-The relevant code is in the [src](/src/) folder. First run [requirements.sh](/src/requirement.sh) to install the necessary libraries. Then run [main.py](/src/main.py) to view the results. Feel free to change the hyperparameters. <br>
+The relevant code is in the [src](/src/) folder. First run [requirements.sh](/src/requirement.sh) to install the necessary libraries. Then run [main.py](/src/main.py) to view the default path.<br>
+If you want to play around with it, I strongly recommend to read the [Primary Hyperparameters](#primary-hyperparameters) section so you know what variables to change. <br>
 It is not recommended to change the `iter` parameter above 5. It is computationally demanding and will take a long time to execute.<br>
 When you close the animation window, something similar to the following should appear in your terminal:
 
-![terminal_output](/terminal.PNG)
+![terminal_output](imgs/terminal.PNG)
 
 <br>
-`minimal possible moves` refers to the theoretical minimal amount of moves the robot could do. This number isn't necessarily achievable, since it depends on how the obstacles are placed. It just counts the total number of gridpoints that aren't covered by an obstacle.<br>
-As `actual moves` implies, its the total number of moves done by the robot to complete the grid.<br>
-`overshot moves by` is the percentage difference between the `minimal possible moves` and the `actual moves.`
+
+- `minimal possible moves` refers to the theoretical minimal amount of moves the robot could do. This number isn't necessarily achievable, since it depends on how the obstacles are placed. It just counts the total number of gridpoints that aren't covered by an obstacle
+- As `actual moves` implies, its the total number of moves done by the robot to complete the grid
+- `overshot moves by` is the percentage difference between the `minimal possible moves` and the `actual moves`    
+
+
+
